@@ -1,0 +1,49 @@
+# Create Database
+CREATE DATABASE databasename;
+
+#Use databaseuse databasename;
+
+
+# Create table
+CREATE TABLE table_name (
+    column1 datatype,
+    column2 datatype,
+    column3 datatype,
+   ....
+);
+
+eg: CREATE TABLE Persons (
+    PersonID int,
+    LastName varchar(255),
+    FirstName varchar(255),
+    Address varchar(255),
+    City varchar(255)
+);
+
+#Alter table
+ALTER TABLE table_name
+ADD column_name datatype;
+
+Eg: ALTER TABLE Customers
+ADD Email varchar(255);
+
+ALTER TABLE table_name
+DROP COLUMN column_name;
+
+Eg:ALTER TABLE Customers
+DROP COLUMN Email;
+
+ALTER TABLE table_name
+ALTER COLUMN column_name datatype;
+
+Eg: ALTER TABLE table_name
+MODIFY COLUMN column_name datatype;
+
+#index
+
+CREATE INDEX index_name
+ON table_name (column1, column2, ...);
+
+Eg:
+CREATE INDEX idx_pname
+ON Persons (LastName, FirstName);
