@@ -1,0 +1,87 @@
+##Download Apache Hive from this link
+##https://dlcdn.apache.org/hive/
+##Download version 2.x only, as version 3.x has problems with java
+##I have downloaded apache-hive-2.3.9-bin.tar.gz
+
+##After downloading extract the file, right click on extracted folder , go to properties and copy the path
+##Use the below command to move the folder into home of hduser
+
+sudo mv /home/pranaypawar/Downloads/apache-hive-2.3.9-bin /home/hduser
+
+##Start hadoop using
+
+start-dfs.sh
+
+start-yarn.sh
+
+##check all nodes are running with jps
+
+jps
+
+##if all ok continue with next step
+
+##Create Hive directories within HDFS. The directory ‘warehouse’ is the location to store the table or data related to hive.
+
+hdfs dfs -mkdir -p /user/hive/warehouse
+
+hdfs dfs -mkdir /tmp
+
+##Set read/write permissions for table.
+
+hdfs dfs -chmod g+w /user/hive/warehouse
+
+hdfs dfs -chmod g+w /tmp
+
+##Give all permissions to apache-hive-2.3.9-bin folder
+
+sudo chmod a+rwx apache-hive-2.3.9-bin/
+sudo chmod -R 777 apache-hive-2.3.9-bin/
+sudo chown -R hduser apache-hive-2.3.9-bin/
+
+##add hive path in bashrc using below command
+sudo nano ~/.bashrc
+
+##go to the last line and add these lines in bashrc file
+export HIVE_HOME=/home/hduser/apache-hive-2.3.9-bin
+export PATH=$PATH:$HIVE_HOME/bin
+
+##Do ctrl+x, hit Y and then Enter. this will save the file
+
+source ~/.bashrc
+
+cd $HIVE_HOME
+
+cd conf/
+
+sudo nano hive-env.sh.template
+
+##add the following lines at the end of the file
+export HADOOP_HOME=/usr/local/hadoop       
+HIVE_CONF_DIR="${HIVE_CONF_DIR:-$HIVE_HOME/conf}"
+export HADOOP_HEAPSIZE=${HADOOP_HEAPSIZE:-256}
+export HIVE_CONF_DIR=$HIVE_CONF_DIR
+export HIVE_AUX_JARS_PATH=$HIVE_AUX_JARS_PATH
+
+##do ctrl+x, hit y , rename the file to hive-env.sh, press enter and then y
+##this will save the file hive-env.sh.template to hive-env.sh
+
+cd ..
+
+cd bin
+
+schematool -initSchema -dbType derby
+
+##after using above command if you get something like this
+//
+Starting metastore schema initialization to 2.3.0
+Initialization script hive-schema-2.3.0.derby.sql
+Initialization script completed
+schemaTool completed
+//
+
+##metastore_db has been created succesfully then
+
+hive
+
+##the above command will start hive
+

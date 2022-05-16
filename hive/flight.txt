@@ -1,0 +1,4 @@
+1,Pune,Mumbai,10:25am,11:25am,5
+2,Pune,Kolkata,7:00am,7:30am,2
+3,Mumbai,Pune,12:30pm,12:45pm,1
+4,Mumbai,Delhi,2:00pm,2:45pm,10

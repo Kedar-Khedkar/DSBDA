@@ -1,0 +1,11 @@
+1,sachin,5000
+2,yuvraj,3000
+3,virat,1000
+4,rahul,4000
+5,saurav,3500
+6,scott,2500
+7,smith,1500
+8,mathew,2400
+9,Laxman,4500
+10,ricky,1300
+11,ram,2000

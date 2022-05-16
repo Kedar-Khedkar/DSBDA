@@ -1,0 +1,257 @@
+##(a)Creating, Dropping, and altering Database tables.
+##(b)Creating an external hive table.
+-------------------------------------------------------------------------------------------	
+hive> create database dsbda;
+OK
+Time taken: 0.344 seconds
+-------------------------------------------------------------------------------------------
+hive> use dsbda;
+OK
+Time taken: 0.017 seconds
+-------------------------------------------------------------------------------------------
+##Creating A External Table
+
+hive> create external table empdata( ename string, esal int)
+    > row format delimited fields terminated by "," stored as textfile location
+    > "/home/hduser/Desktop/empdata";
+OK
+Time taken: 0.334 seconds
+-------------------------------------------------------------------------------------------
+hive> show tables;
+OK
+empdata
+flight
+Time taken: 0.156 seconds, Fetched: 2 row(s)
+-------------------------------------------------------------------------------------------
+hive> load data local inpath '/home/hduser/empdb.txt' into table empdata;
+Loading data to table dsbda.empdata
+OK
+Time taken: 1.193 seconds
+-------------------------------------------------------------------------------------------
+hive> select * from empdata;
+OK
+sachin	5000
+yuvraj	3000
+virat	1000
+rahul	4000
+saurav	3500
+scott	2500
+smith	1500
+mathew	2400
+Laxman	4500
+ricky	1300
+ram	2000
+Time taken: 0.558 seconds, Fetched: 11 row(s)
+-------------------------------------------------------------------------------------------
+##Altering A Table
+
+hive> describe empdata;
+OK
+ename               	string              	                    
+esal                	int                 	                    
+Time taken: 0.083 seconds, Fetched: 2 row(s)
+-------------------------------------------------------------------------------------------
+hive> alter table empdata change esal esal string;
+OK
+Time taken: 0.141 seconds
+-------------------------------------------------------------------------------------------
+hive> describe empdata;
+OK
+ename               	string              	                    
+esal                	string              	                    
+Time taken: 0.096 seconds, Fetched: 2 row(s)
+-------------------------------------------------------------------------------------------
+##Dropping a Table
+
+hive> drop table empdata;
+OK
+Time taken: 0.225 seconds
+-------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------
+##(c)Load table with data, insert new values and field in the table, Join tables with Hive
+
+hive> create table empdbnew(eno int, ename string, esal int) row format delimited fields terminated by ',' stored as textfile;
+OK
+Time taken: 0.291 seconds
+-------------------------------------------------------------------------------------------
+hive> load data local inpath '/home/hduser/empdbnew.txt' into table empdbnew;
+Loading data to table dsbda.empdbnew
+OK
+Time taken: 1.088 seconds
+-------------------------------------------------------------------------------------------
+hive> select * from empdbnew;
+OK
+1	sachin	5000
+2	yuvraj	3000
+3	virat	1000
+4	rahul	4000
+5	saurav	3500
+6	scott	2500
+7	smith	1500
+8	mathew	2400
+9	Laxman	4500
+10	ricky	1300
+11	ram	2000
+Time taken: 0.512 seconds, Fetched: 11 row(s)
+-------------------------------------------------------------------------------------------
+hive> create table empinfo(empno int, empgrade string) row format delimited fields terminated by ',' stored as textfile;
+OK
+Time taken: 0.252 seconds
+-------------------------------------------------------------------------------------------
+hive> load data local inpath '/home/hduser/empinfo.txt' into table empinfo;
+Loading data to table dsbda.empinfo
+OK
+Time taken: 0.948 seconds
+-------------------------------------------------------------------------------------------
+hive> select * from empinfo;
+OK
+1	A
+2	B
+3	B
+4	A
+5	B
+6	B
+7	D
+8	E
+9	C
+10	C
+11	D
+Time taken: 0.32 seconds, Fetched: 10 row(s)
+-------------------------------------------------------------------------------------------
+hive> select * from empdbnew;
+OK
+1	sachin	5000
+2	yuvraj	3000
+3	virat	1000
+4	rahul	4000
+5	saurav	3500
+6	scott	2500
+7	smith	1500
+8	mathew	2400
+9	Laxman	4500
+10	ricky	1300
+11	ram	2000
+Time taken: 0.316 seconds, Fetched: 11 row(s)
+-------------------------------------------------------------------------------------------
+hive> describe empinfo;
+OK
+empno               	int                 	                    
+empgrade            	string              	                    
+Time taken: 0.123 seconds, Fetched: 2 row(s)
+-------------------------------------------------------------------------------------------
+hive> describe empdbnew;
+OK
+eno                 	int                 	                    
+ename               	string              	                    
+esal                	int                 	                    
+Time taken: 0.142 seconds, Fetched: 3 row(s)
+-------------------------------------------------------------------------------------------
+hive> select eno,ename,esal,empno,empgrade from empdbnew join empinfo
+    > on eno=empno;
+WARNING: Hive-on-MR is deprecated in Hive 2 and may not be available in the future versions. Consider using a different execution engine (i.e. spark, tez) or using Hive 1.X releases.
+Query ID = hduser_20220515074732_6941f422-65f0-4133-bdcd-b6b44be91d46
+Total jobs = 1
+SLF4J: Class path contains multiple SLF4J bindings.
+SLF4J: Found binding in [jar:file:/usr/local/hive/lib/log4j-slf4j-impl-2.6.2.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: Found binding in [jar:file:/usr/local/hadoop/share/hadoop/common/lib/slf4j-log4j12-1.7.25.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: See http://www.slf4j.org/codes.html#multiple_bindings for an explanation.
+SLF4J: Actual binding is of type [org.apache.logging.slf4j.Log4jLoggerFactory]
+WARNING: An illegal reflective access operation has occurred
+WARNING: Illegal reflective access by org.apache.hadoop.security.authentication.util.KerberosUtil (file:/usr/local/hadoop/share/hadoop/common/lib/hadoop-auth-2.9.0.jar) to method sun.security.krb5.Config.getInstance()
+WARNING: Please consider reporting this to the maintainers of org.apache.hadoop.security.authentication.util.KerberosUtil
+WARNING: Use --illegal-access=warn to enable warnings of further illegal reflective access operations
+WARNING: All illegal access operations will be denied in a future release
+2022-05-15 07:47:46	Starting to launch local task to process map join;	maximum memory = 536870912
+2022-05-15 07:47:50	Dump the side-table for tag: 1 with group count: 11 into file: file:/tmp/hduser/1ae1d130-04bd-4fad-9bdc-855cb1f31431/hive_2022-05-15_07-47-32_167_8003805475498647939-1/-local-10004/HashTable-Stage-3/MapJoin-mapfile01--.hashtable
+2022-05-15 07:47:50	Uploaded 1 File to: file:/tmp/hduser/1ae1d130-04bd-4fad-9bdc-855cb1f31431/hive_2022-05-15_07-47-32_167_8003805475498647939-1/-local-10004/HashTable-Stage-3/MapJoin-mapfile01--.hashtable (491 bytes)
+2022-05-15 07:47:50	End of local task; Time Taken: 3.816 sec.
+Execution completed successfully
+MapredLocal task succeeded
+Launching Job 1 out of 1
+Number of reduce tasks is set to 0 since there's no reduce operator
+Starting Job = job_1652621639256_0005, Tracking URL = http://localhost:8088/proxy/application_1652621639256_0005/
+Kill Command = /usr/local/hadoop/bin/hadoop job  -kill job_1652621639256_0005
+Hadoop job information for Stage-3: number of mappers: 1; number of reducers: 0
+2022-05-15 07:48:07,280 Stage-3 map = 0%,  reduce = 0%
+2022-05-15 07:48:18,123 Stage-3 map = 100%,  reduce = 0%, Cumulative CPU 4.25 sec
+MapReduce Total cumulative CPU time: 4 seconds 250 msec
+Ended Job = job_1652621639256_0005
+MapReduce Jobs Launched: 
+Stage-Stage-3: Map: 1   Cumulative CPU: 4.25 sec   HDFS Read: 6598 HDFS Write: 413 SUCCESS
+Total MapReduce CPU Time Spent: 4 seconds 250 msec
+OK
+1	sachin	5000	1	A
+2	yuvraj	3000	2	B
+3	virat	1000	3	B
+4	rahul	4000	4	A
+5	saurav	3500	5	B
+6	scott	2500	6	B
+7	smith	1500	7	D
+8	mathew	2400	8	E
+9	Laxman	4500	9	C
+10	ricky	1300	10	C
+11	ram	2000	11	D
+Time taken: 47.145 seconds, Fetched: 11 row(s)
+-------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------
+##d. Create index on Flight Information Table
+##e. Find the average departure delay per day in 2008
+
+hive> create table flight(id int, Source string, Dest string, at string, dt string, delay int)
+    > row format delimited fields terminated by "," stored as textfile location
+    > "/home/hduser/Desktop/flight";
+OK
+Time taken: 0.467 seconds
+-------------------------------------------------------------------------------------------
+hive> load data local inpath '/home/hduser/flight.txt' into table flight;
+Loading data to table dsbda.flight
+OK
+Time taken: 0.833 seconds
+-------------------------------------------------------------------------------------------
+hive> select * from flight;
+OK
+1	Pune	Mumbai	10:25am	11:25am	5
+2	Pune	Kolkata	7:00am	7:30am	2
+3	Mumbai	Pune	12:30pm	12:45pm	1
+4	Mumbai	Delhi	2:00pm	2:45pm	10
+Time taken: 0.411 seconds, Fetched: 4 row(s)
+-------------------------------------------------------------------------------------------
+hive> create index flight_index
+    > on table flight(delay)
+    > AS 'org.apache.hadoop.hive.ql.index.compact.CompactIndexHandler'
+    > WITH DEFERRED REBUILD;
+OK
+Time taken: 0.556 seconds
+-------------------------------------------------------------------------------------------
+hive> show index on flight;
+OK
+flight_index        	flight              	delay               	dsbda__flight_flight_index__	compact             	
+Time taken: 0.213 seconds, Fetched: 1 row(s)
+-------------------------------------------------------------------------------------------
+hive> select avg(delay) from flight;
+WARNING: Hive-on-MR is deprecated in Hive 2 and may not be available in the future versions. Consider using a different execution engine (i.e. spark, tez) or using Hive 1.X releases.
+Query ID = hduser_20220515073349_5c58735c-e1da-4dbe-9a76-69406eee07b3
+Total jobs = 1
+Launching Job 1 out of 1
+Number of reduce tasks determined at compile time: 1
+In order to change the average load for a reducer (in bytes):
+  set hive.exec.reducers.bytes.per.reducer=<number>
+In order to limit the maximum number of reducers:
+  set hive.exec.reducers.max=<number>
+In order to set a constant number of reducers:
+  set mapreduce.job.reduces=<number>
+Starting Job = job_1652621639256_0004, Tracking URL = http://localhost:8088/proxy/application_1652621639256_0004/
+Kill Command = /usr/local/hadoop/bin/hadoop job  -kill job_1652621639256_0004
+Hadoop job information for Stage-1: number of mappers: 1; number of reducers: 1
+2022-05-15 07:34:04,731 Stage-1 map = 0%,  reduce = 0%
+2022-05-15 07:34:15,775 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 3.74 sec
+2022-05-15 07:34:27,638 Stage-1 map = 100%,  reduce = 100%, Cumulative CPU 8.43 sec
+MapReduce Total cumulative CPU time: 8 seconds 430 msec
+Ended Job = job_1652621639256_0004
+MapReduce Jobs Launched: 
+Stage-Stage-1: Map: 1  Reduce: 1   Cumulative CPU: 8.43 sec   HDFS Read: 8689 HDFS Write: 103 SUCCESS
+Total MapReduce CPU Time Spent: 8 seconds 430 msec
+OK
+4.5
+Time taken: 40.836 seconds, Fetched: 1 row(s)
+-------------------------------------------------------------------------------------------

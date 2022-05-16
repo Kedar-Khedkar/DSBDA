@@ -1,0 +1,11 @@
+sachin,5000
+yuvraj,3000
+virat,1000
+rahul,4000
+saurav,3500
+scott,2500
+smith,1500
+mathew,2400
+Laxman,4500
+ricky,1300
+ram,2000
